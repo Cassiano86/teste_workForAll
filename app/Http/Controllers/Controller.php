@@ -26,4 +26,22 @@ class Controller extends BaseController
             return $next($request);
         });
     }
+
+    protected function flashSuccess($title, $message, $icon, $showConfirmButton, $timer){
+        self::setupFlash($title, $message, $icon, $showConfirmButton, $timer);
+    }
+
+    protected function flashError($title, $message, $icon, $showConfirmButton, $timer){
+        self::setupFlash($title, $message, $icon, $showConfirmButton, $timer);
+    }
+
+    protected function setupFlash($title, $message, $icon, $showConfirmButton, $timer){
+        request()->session()->flash('swal_msg', [
+            'title' => $title,
+            'message' => $message,
+            'icon' => $icon,
+            'showConfirmButton' =>$showConfirmButton,
+            'timer' => $timer
+        ]);
+    }
 }

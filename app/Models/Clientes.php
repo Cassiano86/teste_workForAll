@@ -19,6 +19,7 @@ class Clientes extends Model
                             'contato',
                             'nascimento',
                             'categoria_fk',
+                            'estados_fk'
                           ];
 
     public function Categorias(){

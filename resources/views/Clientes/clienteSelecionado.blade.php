@@ -32,7 +32,7 @@
                 <div class="form-row">
                     <div class="form-group col-lg-4 col-sm-12">
                         <label for="nascimento">{{$cliente->tipo == 'Física' ? 'Fundação' : 'Nascimento'}}</label>
-                        <input type="text" name="nascimento" id="nascimento" class='form-control' readonly value="{{$cliente->nascimento}}">
+                        <input type="text" name="nascimento" id="nascimento" class='form-control' readonly value="{{date('d-m-Y', strtotime($cliente->nascimento))}}">
                     </div>
 
                     <div class="form-group col-lg-4 col-sm-12">
