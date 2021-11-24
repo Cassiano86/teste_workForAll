@@ -24,7 +24,7 @@
                         <td>{{$cliente->Categorias->nome}}</td>
                         <td>
                             @if(isset(auth()->user()->id))
-                            <a href="{{route('cliente.show', encrypt($cliente->id))}}"  class='btn btn-sm btn-primary' data-toggle="tooltip" data-placement="top" title="Informação completa">
+                            <a href="{{route('cliente.show', $cliente->id)}}"  class='btn btn-sm btn-primary' data-toggle="tooltip" data-placement="top" title="Informação completa">
                                 <i class="{{config('app.material')}}">add</i> informações
                             </a>
                             @else
@@ -43,7 +43,7 @@
                     @endforelse    
                 </tbody>   
             </table>
-            <div class="relative flex items-top justify-center">{{$clientes->links()}}</div>
+            <div class="d-flex justify-content-end">{{$clientes->links('pagination::bootstrap-4')}}</div>
         </div>
     </div>
     

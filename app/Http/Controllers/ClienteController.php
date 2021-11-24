@@ -7,6 +7,7 @@ use App\Models\Clientes;
 use App\Models\Estados;
 use App\Models\Categorias;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
@@ -68,11 +69,11 @@ class ClienteController extends Controller
 
         Clientes::create([
                             'nome'          => $request->get('nome'),
-                            'tipo'          => decrypt($request->get('tipo')) == 'Física' ? 'Física' : 'Jurídica',
+                            'tipo'          => $request->get('tipo') == 'Física' ? 'Física' : 'Jurídica',
                             'contato'       => $request->get('contato'),
                             'nascimento'    => $request->get('nascimento'),
-                            'estados_fk'    => decrypt($request->get('estado')),
-                            'categoria_fk'  => decrypt($request->get('categoria')),
+                            'estados_fk'    => $request->get('estado'),
+                            'categoria_fk'  => $request->get('categoria'),
                         ]);
 
         parent::flashSuccess("Sucesso", "Cliente Cadastrado com sucesso", "success", false, 1500);
@@ -87,7 +88,7 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        return view('Clientes.clienteSelecionado' ,['cliente' => CLientes::find(decrypt($id))] );
+        return view('Clientes.clienteSelecionado' ,['cliente' => CLientes::find($id)] );
     }
 
     /**
@@ -101,7 +102,7 @@ class ClienteController extends Controller
         return view('Clientes.editar',[
                                             'categorias' => Categorias::all(),
                                             'estados' => Estados::orderBy('nome')->get(),
-                                            'cliente' => Clientes::find(decrypt($id)) 
+                                            'cliente' => Clientes::find($id) 
                                         ]);
     }
 
@@ -117,7 +118,7 @@ class ClienteController extends Controller
         $regras = [
                     'nome'  => 'required',
                     'tipo'  => 'required',
-                    'contato' => 'required|regex:/^[0-9]+$/|max:15|unique:clientes,contato,'.decrypt($id),
+                    'contato' => 'required|regex:/^[0-9]+$/|max:15|unique:clientes,contato,'.$id,
                     'nascimento' => 'required|date',
                     'estado'  => 'required',
                     'categoria' => 'required',
@@ -138,14 +139,14 @@ class ClienteController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
-        Clientes::find(decrypt($id))
+        Clientes::find($id)
                 ->update([
                         'nome'          => $request->get('nome'),
-                        'tipo'          => decrypt($request->get('tipo')) == 'Física' ? 'Física' : 'Jurídica',
+                        'tipo'          => $request->get('tipo') == 'Física' ? 'Física' : 'Jurídica',
                         'contato'       => $request->get('contato'),
                         'nascimento'    => $request->get('nascimento'),
-                        'estados_fk'    => decrypt($request->get('estado')),
-                        'categoria_fk'  => decrypt($request->get('categoria')),
+                        'estados_fk'    => $request->get('estado'),
+                        'categoria_fk'  => $request->get('categoria'),
                 ]);
 
         parent::flashSuccess("Sucesso", "Dados atualizados com sucesso", "success", false, 1500);
@@ -160,8 +161,42 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        Clientes::find(decrypt($id))->delete();
+        Clientes::find($id)->delete();
         parent::flashSuccess("Sucesso", "Cliente deletado com sucesso", "success", false, 1500);
         return redirect()->route('cliente.administrativo');
+    }
+
+    public function search(Request $request){
+        $relacao = DB::table('clientes')
+                    ->join('categorias','categorias.id','=','clientes.categoria_fk')
+                    ->join('estados','estados.id','=','clientes.estados_fk')
+                    ->where('clientes.nome','like','%'.$request->get('busca').'%')
+                    ->orWhere('estados.nome','like','%'.$request->get('busca').'%')
+                    ->orWhere('categorias.nome','like','%'.$request->get('busca').'%')
+                    ->select(
+                                'clientes.id',
+                                'clientes.nome as nome_cliente',
+                                'estados.nome as nome_estado',
+                                'categorias.nome as nome_categoria',
+                            )
+                    ->limit(10)
+                    ->get();
+
+        $relacao_total = DB::table('clientes')
+                        ->join('categorias','categorias.id','=','clientes.categoria_fk')
+                        ->join('estados','estados.id','=','clientes.estados_fk')
+                        ->where('clientes.nome','like','%'.$request->get('busca').'%')
+                        ->orWhere('estados.nome','like','%'.$request->get('busca').'%')
+                        ->orWhere('categorias.nome','like','%'.$request->get('busca').'%')
+                        ->count();
+        
+        if(!empty($relacao)){
+            return response()->json(['success' => 1,
+                                     'dados' => $relacao,
+                                     'total_tabela' => ceil($relacao_total / 10)
+                                    ]);
+        }else{
+            return response()->json(['success' => 0]);
+        }
     }
 }

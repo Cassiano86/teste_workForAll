@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'cliente'], function(){
     Route::put('/update/{id}', ['as' => 'cliente.update', 'uses' => "App\Http\Controllers\ClienteController@update"]);
     Route::get('/show/{id}', ['as' => 'cliente.show', 'uses' => "App\Http\Controllers\ClienteController@show"]);
     Route::delete('/destroy/{id}', ['as' => 'cliente.destroy', 'uses' => "App\Http\Controllers\ClienteController@destroy"]);
+    Route::post('/search', ['as' => 'cliente.search', 'uses' => "App\Http\Controllers\ClienteController@search"]);
 });
 
 Auth::routes();

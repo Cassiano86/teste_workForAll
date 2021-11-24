@@ -15,7 +15,7 @@
 
             <div class="d-flex justify-content-end my-4">
                 <div class="col-sm-4 input-group">
-                    <input type="text" name="buscar_cliente" id="buscar_cliente" class="form-control" placeholder="Selecinar cliente">
+                    <input type="text" id="buscar_cliente_admin" class="form-control" placeholder="Selecinar cliente">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroupPrepend2">
                             <i class="{{config('app.material')}}">search</i>   
@@ -33,7 +33,7 @@
                         <th scope='col'>Ações</th>
                     </tr>  
                 </thead>
-                <tbody>
+                <tbody id="body_table">
                     @forelse($clientes as $cliente)
                     <tr>
                         <td>{{$cliente->nome}}</td>
@@ -41,11 +41,11 @@
                         <td>{{$cliente->Categorias->nome}}</td>
                         <td>
                             
-                            <a href="{{route('cliente.edit', encrypt($cliente->id))}}"  class='btn btn-sm btn-info text-white' data-toggle="tooltip" data-placement="top" title="Atualizar informações">
+                            <a href="{{route('cliente.edit', $cliente->id)}}"  class='btn btn-sm btn-info text-white' data-toggle="tooltip" data-placement="top" title="Atualizar informações">
                                 <i class="{{config('app.material')}}">autorenew</i>
                             </a>
                             
-                            <button value="{{route('cliente.destroy', encrypt($cliente->id))}}" class='btn btn-sm btn-danger btn_delete' data-toggle="tooltip" data-placement="top" title="Deletar cliente">
+                            <button value="{{route('cliente.destroy', $cliente->id)}}" class='btn btn-sm btn-danger btn_delete' data-toggle="tooltip" data-placement="top" title="Deletar cliente">
                                 <i class="{{config('app.material')}}">delete_forever</i>
                             </button>                            
                         </td>
@@ -59,7 +59,7 @@
                     @endforelse    
                 </tbody>   
             </table>
-            <div class="relative flex items-top justify-center">{{$clientes->links()}}</div>
+            <div class="d-flex justify-content-end">{{$clientes->links('pagination::bootstrap-4')}}</div>
         </div>
     </div>
     @include('Clientes.modals.deletar')

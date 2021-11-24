@@ -21,8 +21,8 @@
                                 <label for="tipo">Pessoa</label>
                                 <select name="tipo" id="tipo" class='form-control'>
                                     <option disabled selected>-- Selecione o tipo --</option>
-                                    <option value="{{encrypt(1)}}">Física</option>
-                                    <option value="{{encrypt(2)}}">Jurídica</option>
+                                    <option value="1">Física</option>
+                                    <option value="2">Jurídica</option>
                                 </select>
                                 <small class="text-danger">{{$errors->has('tipo') ? $errors->first('tipo') : ''}}</small>
                             </div>
@@ -45,7 +45,7 @@
                                 <select name="estado" id="estado" class="form-control">
                                     <option disabled selected>-- Selecione o estado --</option>
                                     @foreach($estados as $estado)
-                                        <option value="{{encrypt($estado->id)}}">{{$estado->nome}}</option>
+                                        <option value="{{$estado->id}}">{{$estado->nome}}</option>
                                     @endforeach
                                 </select>
                                 <small class="text-danger">{{$errors->has('estado') ? $errors->first('estado') : ''}}</small>
@@ -56,7 +56,7 @@
                                 <select name="categoria" id="categoria" class="form-control">
                                     <option disabled selected>-- Selecione a categoria --</option>
                                     @foreach($categorias as $categoria)
-                                        <option value="{{encrypt($categoria->id)}}">{{$categoria->nome}}</option>
+                                        <option value="{{$categoria->id}}">{{$categoria->nome}}</option>
                                     @endforeach
                                 </select>
                                 <small class="text-danger">{{$errors->has('categoria') ? $errors->first('categoria') : ''}}</small>
